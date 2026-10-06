@@ -1,0 +1,28 @@
+# Dependencies used by this sample app during tests: RabbitMQ (TemplateMaster messaging) and
+# smtp4dev (catches every e-mail TemplateMaster sends, instead of a real SMTP server).
+#
+#   docker compose up -d
+#   dotnet run
+#
+# Ports match appsettings.json / appsettings.Development.json (RabbitMq:Port 5672, EmailSettings Port 2525) -
+# change both together if you need to avoid a collision with another local stack.
+name: invoicedemo
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"     # AMQP (RabbitMq:Host/Port in appsettings.json)
+      - "15672:15672"   # management UI: http://localhost:15672 (guest/guest)
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  # Catches every e-mail TemplateMaster sends: http://localhost:5080
+  smtp4dev:
+    image: rnwood/smtp4dev:v3
+    ports:
+      - "2525:25"
+      - "5080:80"
