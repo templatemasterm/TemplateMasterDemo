@@ -1,0 +1,8 @@
+bin/
+obj/
+Chrome/
+App_Data/
+Stockage/
+.vs/
+*.user
+appsettings.*.local.json
